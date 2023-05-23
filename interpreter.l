@@ -39,6 +39,9 @@
 "=="            return EQ;
 "equal"         return EQ;
 "!="            return NE;
+"not"           return NOT;
+"and"           return AND;
+"or"            return OR;
 "while"         return WHILE;
 "if"            return IF;
 "else"          return ELSE;

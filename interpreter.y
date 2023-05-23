@@ -27,10 +27,10 @@ int sym[26]; /* symbol table */
 %nonassoc IFX
 %nonassoc ELSE
 
-%left GE LE EQ NE '>' '<'
+%left GE LE EQ NE '>' '<' AND OR
 %left '+' '-'
 %left '*' '/'
-%nonassoc UMINUS
+%nonassoc UMINUS NOT
 
 %type <nPtr> statement expr stmt_list
 
@@ -67,6 +67,7 @@ expr      : INTEGER               { $$ = con($1); }
           | LIE                   { $$ = con($1); }
           | VARIABLE              { $$ = id($1); }
           | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
+          | NOT expr %prec NOT    { $$ = opr(NOT, 1, $2); }
           | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
           | expr '-' expr         { $$ = opr('-', 2, $1, $3); }
           | expr '*' expr         { $$ = opr('*', 2, $1, $3); }
@@ -77,6 +78,8 @@ expr      : INTEGER               { $$ = con($1); }
           | expr LE expr          { $$ = opr(LE, 2, $1, $3); }
           | expr NE expr          { $$ = opr(NE, 2, $1, $3); }
           | expr EQ expr          { $$ = opr(EQ, 2, $1, $3); }
+          | expr AND expr         { $$ = opr(AND, 2, $1, $3); }
+          | expr OR expr         { $$ = opr(OR, 2, $1, $3); }
           | '(' expr ')'          { $$ = $2; }
           ;
 
@@ -162,12 +165,20 @@ int ex(nodeType *p)
 		             else if (p->opr.nops > 2) 
 			             ex(p->opr.op[2]); 
 		             return 0; 
-		    case PRINT: printf("%d\n", ex(p->opr.op[0])); 
+		    case PRINT: if(ex(p->opr.op[0])==1 || ex(p->opr.op[0])==0)
+                        {
+                            printf("%s\n",ex(p->opr.op[0])==1?"fact":"lie");
+                        }
+                        else 
+                        {
+                            printf("%d\n", ex(p->opr.op[0]));
+                        } 
 		                return 0; 
 		    case ';': ex(p->opr.op[0]); 
 		              return ex(p->opr.op[1]); 
 		    case '=': return sym[p->opr.op[0]->id.i] = ex(p->opr.op[1]); 
-		    case UMINUS: return -ex(p->opr.op[0]); 
+		    case UMINUS: return -ex(p->opr.op[0]);
+            case NOT: return !ex(p->opr.op[0]); 
 		    case '+': return ex(p->opr.op[0]) + ex(p->opr.op[1]); 
 		    case '-': return ex(p->opr.op[0]) - ex(p->opr.op[1]); 
 		    case '*': return ex(p->opr.op[0]) * ex(p->opr.op[1]); 
@@ -177,7 +188,9 @@ int ex(nodeType *p)
 		    case GE: return ex(p->opr.op[0]) >= ex(p->opr.op[1]); 
 		    case LE: return ex(p->opr.op[0]) <= ex(p->opr.op[1]); 
 		    case NE: return ex(p->opr.op[0]) != ex(p->opr.op[1]); 
-		    case EQ: return ex(p->opr.op[0]) == ex(p->opr.op[1]); 
+		    case EQ: return ex(p->opr.op[0]) == ex(p->opr.op[1]);
+            case AND: return ex(p->opr.op[0]) && ex(p->opr.op[1]); 
+            case OR: return ex(p->opr.op[0]) || ex(p->opr.op[1]); 
 		    } 
     } 
 }
