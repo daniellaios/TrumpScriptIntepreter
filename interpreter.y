@@ -55,7 +55,7 @@ statement : ';'                   { $$ = opr(';', 2, NULL, NULL); }
                  { $$ = opr(IF, 2, $3, $5); }
           | IF '(' expr ')' statement ELSE statement
                  { $$ = opr(IF, 3, $3, $5, $7); }
-          | '{' stmt_list '}' { $$ = $2; }
+          | ':' stmt_list '!' { $$ = $2; }
           ;
 
 stmt_list : statement
