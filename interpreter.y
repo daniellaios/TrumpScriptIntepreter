@@ -21,7 +21,7 @@ int sym[26]; /* symbol table */
   nodeType *nPtr;  /* node pointer */
 };
 
-%token <iValue> INTEGER 
+%token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token WHILE IF PRINT
 %nonassoc IFX
@@ -63,6 +63,8 @@ stmt_list : statement
           ;
 
 expr      : INTEGER               { $$ = con($1); }
+          | FACT                  { $$ = con($1); }
+          | LIE                   { $$ = con($1); }
           | VARIABLE              { $$ = id($1); }
           | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
           | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
