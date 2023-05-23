@@ -15,7 +15,7 @@
   /* integers */                 
 [0-9]+          {
                    int value = atoi(yytext);
-                   if(value >= 1000000 || value == 0){
+                   if(value >= 1000000){
                    yylval.iValue = value;
                    return INTEGER;
                    } else {
@@ -24,7 +24,7 @@
                 }
 
   /* operators */
-[-()<>=+/*;{}.] return *yytext;
+[-()<>=+/*;{}.:!] return *yytext;
 
 "plus"          return '+';
 "minus"         return '-';
@@ -39,6 +39,9 @@
 "=="            return EQ;
 "equal"         return EQ;
 "!="            return NE;
+"not"           return NOT;
+"and"           return AND;
+"or"            return OR;
 "while"         return WHILE;
 "if"            return IF;
 "else"          return ELSE;

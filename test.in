@@ -1,6 +1,6 @@
 i=1000000;
-j=1000000;
-while (i fewer 10000000) :
+j=2000000;
+while ((i fewer 10000000) and (j equal 2000000)) :
   if ((i-(2000000 *(i/2000000)))==lie):
     print i;
   !
@@ -9,4 +9,7 @@ while (i fewer 10000000) :
   !;
   i=i plus 1000000;
   !
+print (lie or fact);
+print (1000001-1000000);
+print (not fact and fact);
 .
