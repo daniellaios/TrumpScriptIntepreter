@@ -23,7 +23,7 @@ int sym[26]; /* symbol table */
 
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
-%token WHILE IF PRINT
+%token WHILE IF PRINT END_STATEMENT
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -38,7 +38,7 @@ int sym[26]; /* symbol table */
 
 %%
 
-program   : function '.'          { exit(0); }
+program   : function END_STATEMENT          { exit(0); }
           ;
 
 function  : function statement    { ex($2); freeNode($2); }
@@ -82,6 +82,7 @@ expr      : INTEGER               { $$ = con($1); }
           | expr OR expr         { $$ = opr(OR, 2, $1, $3); }
           | '(' expr ')'          { $$ = $2; }
           ;
+                   
 
 %%
 
