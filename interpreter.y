@@ -4,25 +4,31 @@
 #include <stdarg.h>
 #include "types.h"
 #define YYDEBUG 0
+
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(int i);
 nodeType *con(int value);
+nodeType *str(char *s);
 void freeNode(nodeType *p);
 void yyerror(char *s);
 
-int sym[26]; /* symbol table */
+Variable sym[26]; /* symbol table */
+
+Variable ex(nodeType *p);
 
 %}
 
 %union {
   int iValue;      /* integer value */
   char sIndex;     /* symbol table index */
+  char *str;      /* strings */
   nodeType *nPtr;  /* node pointer */
 };
 
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
+%token <str> STRING
 %token WHILE IF PRINT
 %nonassoc IFX
 %nonassoc ELSE
@@ -66,6 +72,7 @@ expr      : INTEGER               { $$ = con($1); }
           | FACT                  { $$ = con($1); }
           | LIE                   { $$ = con($1); }
           | VARIABLE              { $$ = id($1); }
+          | STRING                { $$ = str($1); }
           | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
           | NOT expr %prec NOT    { $$ = opr(NOT, 1, $2); }
           | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
@@ -97,6 +104,18 @@ nodeType *con(int value)
   p->con.value = value; 
   return p; 
 } 
+
+nodeType *str(char *s)
+{
+  nodeType *n;
+
+  if (!(n = malloc(sizeof(conNodeType)))) {
+    yyerror("out of memory");
+  }
+  n->type = typeStr;
+  n->con.str = s;
+  return n;
+}
 
 nodeType *id(int i) 
 { 
@@ -144,53 +163,59 @@ void freeNode(nodeType *p)
       freeNode(p->opr.op[i]); 
   } 
   free (p); 
-} 
+}
 
-int ex(nodeType *p) 
+Variable ex(nodeType *p) 
 { 
-  if (!p) 
-    return 0; 
-
+  Variable data;
+  if (!p){
+    data.value = 0; 
+    return data; 
+  }
   switch(p->type) 
     { 
-    case typeCon: return p->con.value; 
+    case typeCon: data.value = p->con.value;  return data;
+    case typeStr:  data.str = p->con.str;  return  data;
     case typeId: return sym[p->id.i]; 
     case typeOpr: switch(p->opr.oper) 
                     { 
-		    case WHILE: while(ex(p->opr.op[0])) 
-		                   ex(p->opr.op[1]); 
-		                return 0; 
-		    case IF: if (ex(p->opr.op[0])) 
+		    case WHILE: while(ex(p->opr.op[0]).value) 
+		                   ex(p->opr.op[1]);
+                    data.value = 0; 
+		                return data; 
+		    case IF: if (ex(p->opr.op[0]).value) 
 		                ex(p->opr.op[1]); 
 		             else if (p->opr.nops > 2) 
 			             ex(p->opr.op[2]); 
-		             return 0; 
-		    case PRINT: if(ex(p->opr.op[0])==1 || ex(p->opr.op[0])==0)
+		             data.value = 0; 
+		             return data;
+		    case PRINT: if(ex(p->opr.op[0]).value==1 || ex(p->opr.op[0]).value==0)
                         {
-                            printf("%s\n",ex(p->opr.op[0])==1?"fact":"lie");
+                            printf("%s\n",ex(p->opr.op[0]).value==1?"fact":"lie");
                         }
                         else 
                         {
-                            printf("%d\n", ex(p->opr.op[0]));
+                            printf("%d\n", ex(p->opr.op[0]).value);
                         } 
-		                return 0; 
+		                data.value = 0; 
+		                return data; 
 		    case ';': ex(p->opr.op[0]); 
 		              return ex(p->opr.op[1]); 
 		    case '=': return sym[p->opr.op[0]->id.i] = ex(p->opr.op[1]); 
-		    case UMINUS: return -ex(p->opr.op[0]);
-            case NOT: return !ex(p->opr.op[0]); 
-		    case '+': return ex(p->opr.op[0]) + ex(p->opr.op[1]); 
-		    case '-': return ex(p->opr.op[0]) - ex(p->opr.op[1]); 
-		    case '*': return ex(p->opr.op[0]) * ex(p->opr.op[1]); 
-		    case '/': return ex(p->opr.op[0]) / ex(p->opr.op[1]); 
-		    case '<': return ex(p->opr.op[0]) < ex(p->opr.op[1]); 
-		    case '>': return ex(p->opr.op[0]) > ex(p->opr.op[1]); 
-		    case GE: return ex(p->opr.op[0]) >= ex(p->opr.op[1]); 
-		    case LE: return ex(p->opr.op[0]) <= ex(p->opr.op[1]); 
-		    case NE: return ex(p->opr.op[0]) != ex(p->opr.op[1]); 
-		    case EQ: return ex(p->opr.op[0]) == ex(p->opr.op[1]);
-            case AND: return ex(p->opr.op[0]) && ex(p->opr.op[1]); 
-            case OR: return ex(p->opr.op[0]) || ex(p->opr.op[1]); 
+		    case UMINUS: data.value = -ex(p->opr.op[0]).value; return data;
+            case NOT: data.value = !ex(p->opr.op[0]).value;  return  data;
+		    case '+': data.value = ex(p->opr.op[0]).value + ex(p->opr.op[1]).value; return data;
+		    case '-': data.value = ex(p->opr.op[0]).value - ex(p->opr.op[1]).value; return data;  
+		    case '*': data.value = ex(p->opr.op[0]).value * ex(p->opr.op[1]).value; return data; 
+		    case '/': data.value = ex(p->opr.op[0]).value / ex(p->opr.op[1]).value; return data;
+		    case '<': data.value = ex(p->opr.op[0]).value < ex(p->opr.op[1]).value; return data;  
+		    case '>': data.value = ex(p->opr.op[0]).value > ex(p->opr.op[1]).value; return data;  
+		    case GE: data.value = ex(p->opr.op[0]).value >= ex(p->opr.op[1]).value; return data;  
+		    case LE: data.value = ex(p->opr.op[0]).value <= ex(p->opr.op[1]).value; return data;  
+		    case NE: data.value = ex(p->opr.op[0]).value != ex(p->opr.op[1]).value; return data;  
+		    case EQ: data.value = ex(p->opr.op[0]).value == ex(p->opr.op[1]).value; return data; 
+            case AND: data.value = ex(p->opr.op[0]).value && ex(p->opr.op[1]).value; return data;  
+            case OR: data.value = ex(p->opr.op[0]).value || ex(p->opr.op[1]).value; return data;  
 		    } 
     } 
 }

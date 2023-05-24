@@ -56,7 +56,10 @@
                 }
 
 [ \t\n]+        ;      // Skip whitespaces.
-
+\".+\"          {
+                  yylval.str = strdup(yytext);
+                  return STRING;
+                }
 .               yyerror("Unknown character.\n");
 
 %%
