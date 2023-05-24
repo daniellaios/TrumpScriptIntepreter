@@ -1,6 +1,6 @@
 i=1000000;
 j=2000000;
-while ((i fewer 10000000) and (j equal 2000000)) :
+as long as ((i fewer 10000000) and (j equal 2000000)) :
   if ((i-(2000000 *(i/2000000)))==lie):
     print i;
   !

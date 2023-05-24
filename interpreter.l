@@ -42,7 +42,7 @@
 "not"           return NOT;
 "and"           return AND;
 "or"            return OR;
-"while"         return WHILE;
+"as long as"    return WHILE;
 "if"            return IF;
 "else"          return ELSE;
 "print"         return PRINT;
