@@ -29,7 +29,7 @@ Variable ex(nodeType *p);
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token <str> STRING
-%token WHILE IF PRINT
+%token WHILE IF PRINT PRINTS
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -54,6 +54,7 @@ function  : function statement    { ex($2); freeNode($2); }
 statement : ';'                   { $$ = opr(';', 2, NULL, NULL); }
           | expr ';'              { $$ = $1; }
           | PRINT expr ';'        { $$ = opr(PRINT, 1, $2); }
+          | PRINTS expr ';'        { $$ = opr(PRINTS, 1, $2); }
           | VARIABLE '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
           | WHILE '(' expr ')' statement
                  { $$ = opr(WHILE, 2, $3, $5); }
@@ -198,12 +199,15 @@ Variable ex(nodeType *p)
                             printf("%d\n", ex(p->opr.op[0]).value);
                         } 
 		                data.value = 0; 
-		                return data; 
+		                return data;
+        case PRINTS: printf("%s\n", ex(p->opr.op[0]).str);
+		                 data.value = 0; 
+		                 return data; 
 		    case ';': ex(p->opr.op[0]); 
 		              return ex(p->opr.op[1]); 
 		    case '=': return sym[p->opr.op[0]->id.i] = ex(p->opr.op[1]); 
 		    case UMINUS: data.value = -ex(p->opr.op[0]).value; return data;
-            case NOT: data.value = !ex(p->opr.op[0]).value;  return  data;
+        case NOT: data.value = !ex(p->opr.op[0]).value;  return  data;
 		    case '+': data.value = ex(p->opr.op[0]).value + ex(p->opr.op[1]).value; return data;
 		    case '-': data.value = ex(p->opr.op[0]).value - ex(p->opr.op[1]).value; return data;  
 		    case '*': data.value = ex(p->opr.op[0]).value * ex(p->opr.op[1]).value; return data; 
@@ -214,8 +218,8 @@ Variable ex(nodeType *p)
 		    case LE: data.value = ex(p->opr.op[0]).value <= ex(p->opr.op[1]).value; return data;  
 		    case NE: data.value = ex(p->opr.op[0]).value != ex(p->opr.op[1]).value; return data;  
 		    case EQ: data.value = ex(p->opr.op[0]).value == ex(p->opr.op[1]).value; return data; 
-            case AND: data.value = ex(p->opr.op[0]).value && ex(p->opr.op[1]).value; return data;  
-            case OR: data.value = ex(p->opr.op[0]).value || ex(p->opr.op[1]).value; return data;  
+        case AND: data.value = ex(p->opr.op[0]).value && ex(p->opr.op[1]).value; return data;  
+        case OR: data.value = ex(p->opr.op[0]).value || ex(p->opr.op[1]).value; return data;  
 		    } 
     } 
 }

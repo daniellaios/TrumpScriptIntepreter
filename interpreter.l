@@ -46,6 +46,7 @@
 "if"            return IF;
 "else"          return ELSE;
 "print"         return PRINT;
+"prints"         return PRINTS;
 "fact"          {   
                     yylval.iValue = 1;
                     return FACT;

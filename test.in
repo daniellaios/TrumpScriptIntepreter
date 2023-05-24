@@ -13,5 +13,5 @@ print (lie or fact);
 print (1000001-1000000);
 print (not fact and fact);
 a="acesta este un string";
-print a;
+prints a;
 .
