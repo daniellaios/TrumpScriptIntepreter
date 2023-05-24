@@ -30,7 +30,7 @@ Variable ex(nodeType *p);
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token <str> STRING
-%token WHILE IF PRINT PRINTS IS
+%token WHILE IF PRINT PRINTS IS MAKE
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -58,6 +58,7 @@ statement : ';'                   { $$ = opr(';', 2, NULL, NULL); }
           | PRINTS expr ';'        { $$ = opr(PRINTS, 1, $2); }
           | VARIABLE '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
           | VARIABLE IS expr ';' { $$ = opr('=', 2, id($1), $3); }
+          | MAKE VARIABLE expr ';' { $$ = opr('=', 2, id($2), $3); }
           | WHILE '(' expr ')' statement
                  { $$ = opr(WHILE, 2, $3, $5); }
           | IF '(' expr ')' statement %prec IFX

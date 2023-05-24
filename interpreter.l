@@ -49,6 +49,7 @@
 "prints"        return PRINTS;
 "is"            return IS;
 "are"           return IS;
+"make"          return MAKE;
 "fact"          {   
                     yylval.iValue = 1;
                     return FACT;
