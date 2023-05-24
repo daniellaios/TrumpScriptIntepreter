@@ -9,6 +9,7 @@ as long as ((i fewer 10000000) and (j equal 2000000)) :
   !;
   i=i plus 1000000;
   !
+china;
 print (lie or fact);
 print (1000001-1000000);
 print (not fact and fact);

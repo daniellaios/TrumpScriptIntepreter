@@ -50,6 +50,7 @@
 "is"            return IS;
 "are"           return IS;
 "make"          return MAKE;
+"china"         return CHINA;
 "fact"          {   
                     yylval.iValue = 1;
                     return FACT;

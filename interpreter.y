@@ -30,7 +30,7 @@ Variable ex(nodeType *p);
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token <str> STRING
-%token WHILE IF PRINT PRINTS IS MAKE
+%token WHILE IF PRINT PRINTS IS MAKE CHINA
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -77,6 +77,7 @@ expr      : INTEGER               { $$ = con($1); }
           | LIE                   { $$ = con($1); }
           | VARIABLE              { $$ = id($1); }
           | STRING                { $$ = str($1); }
+          | CHINA                 { yyerror("china");}
           | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
           | NOT expr %prec NOT    { $$ = opr(NOT, 1, $2); }
           | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
@@ -180,7 +181,7 @@ Variable ex(nodeType *p)
   switch(p->type) 
     { 
     case typeCon: data.value = p->con.value;  return data;
-    case typeStr:  data.str = p->con.str;  return  data;
+    case typeStr:  data.str = p->con.str; return  data;
     case typeId: return sym[p->id.i]; 
     case typeOpr: switch(p->opr.oper) 
                     { 
