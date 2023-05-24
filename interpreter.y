@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include "types.h"
 #define YYDEBUG 0
 
@@ -29,11 +30,11 @@ Variable ex(nodeType *p);
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token <str> STRING
-%token WHILE IF PRINT PRINTS
+%token WHILE IF PRINT PRINTS IS
 %nonassoc IFX
 %nonassoc ELSE
 
-%left GE LE EQ NE '>' '<' AND OR
+%left GE LE EQ NE '>' '<' AND OR SEQ
 %left '+' '-'
 %left '*' '/'
 %nonassoc UMINUS NOT
@@ -56,6 +57,7 @@ statement : ';'                   { $$ = opr(';', 2, NULL, NULL); }
           | PRINT expr ';'        { $$ = opr(PRINT, 1, $2); }
           | PRINTS expr ';'        { $$ = opr(PRINTS, 1, $2); }
           | VARIABLE '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
+          | VARIABLE IS expr ';' { $$ = opr('=', 2, id($1), $3); }
           | WHILE '(' expr ')' statement
                  { $$ = opr(WHILE, 2, $3, $5); }
           | IF '(' expr ')' statement %prec IFX
@@ -87,7 +89,8 @@ expr      : INTEGER               { $$ = con($1); }
           | expr NE expr          { $$ = opr(NE, 2, $1, $3); }
           | expr EQ expr          { $$ = opr(EQ, 2, $1, $3); }
           | expr AND expr         { $$ = opr(AND, 2, $1, $3); }
-          | expr OR expr         { $$ = opr(OR, 2, $1, $3); }
+          | expr OR expr          { $$ = opr(OR, 2, $1, $3); }
+          | expr IS expr '?'      { $$ = opr(SEQ, 2, $1, $3); }
           | '(' expr ')'          { $$ = $2; }
           ;
 
@@ -219,7 +222,8 @@ Variable ex(nodeType *p)
 		    case NE: data.value = ex(p->opr.op[0]).value != ex(p->opr.op[1]).value; return data;  
 		    case EQ: data.value = ex(p->opr.op[0]).value == ex(p->opr.op[1]).value; return data; 
         case AND: data.value = ex(p->opr.op[0]).value && ex(p->opr.op[1]).value; return data;  
-        case OR: data.value = ex(p->opr.op[0]).value || ex(p->opr.op[1]).value; return data;  
+        case OR: data.value = ex(p->opr.op[0]).value || ex(p->opr.op[1]).value; return data; 
+        case SEQ: data.value = !strcmp(ex(p->opr.op[0]).str,ex(p->opr.op[1]).str); return data;
 		    } 
     } 
 }

@@ -24,7 +24,7 @@
                 }
 
   /* operators */
-[-()<>=+/*;{}.:!] return *yytext;
+[-()<>=+/*;{}.:!?] return *yytext;
 
 "plus"          return '+';
 "minus"         return '-';
@@ -46,7 +46,9 @@
 "if"            return IF;
 "else"          return ELSE;
 "print"         return PRINT;
-"prints"         return PRINTS;
+"prints"        return PRINTS;
+"is"            return IS;
+"are"           return IS;
 "fact"          {   
                     yylval.iValue = 1;
                     return FACT;
