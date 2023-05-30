@@ -1,9 +1,10 @@
-typedef enum { typeCon, typeId, typeOpr } nodeEnum;
+typedef enum { typeCon, typeId, typeOpr, typeStr } nodeEnum;
 
 /* constants */
 typedef struct {
   nodeEnum type; /* type of node */
   int value; /* value of constant */
+  char *str; /*value of string constant*/
 } conNodeType;
 
 /* identifiers */
@@ -27,4 +28,9 @@ typedef union nodeTypeTag {
   oprNodeType opr; /* operators */
 } nodeType;
 
-extern int sym[26];
+typedef union {
+  int value;
+  char *str;
+}Variable;
+
+extern Variable sym[26];

@@ -24,17 +24,17 @@
                 }
 
   /* operators */
-[-()<>=+/*;{}.:!] return *yytext;
+[-()<>=+/*;{}.:!?] return *yytext;
 
 "plus"          return '+';
 "minus"         return '-';
 ">="            return GE;
-"more"          return GE;
-"greater"       return GE;
-"larger"        return GE;
-"less"          return LE;
-"fewer"         return LE;
-"smaller"       return LE;
+"more"          return '>';
+"greater"       return '>';
+"larger"        return '>';
+"less"          return '<';
+"fewer"         return '<';
+"smaller"       return '<';
 "<="            return LE;
 "=="            return EQ;
 "equal"         return EQ;
@@ -42,10 +42,15 @@
 "not"           return NOT;
 "and"           return AND;
 "or"            return OR;
-"while"         return WHILE;
+"as long as"    return WHILE;
 "if"            return IF;
 "else"          return ELSE;
 "print"         return PRINT;
+"prints"        return PRINTS;
+"is"            return IS;
+"are"           return IS;
+"make"          return MAKE;
+"china"         return CHINA;
 "fact"          {   
                     yylval.iValue = 1;
                     return FACT;
@@ -57,7 +62,10 @@
 "America is great." return END_STATEMENT;                
 
 [ \t\n]+        ;      // Skip whitespaces.
-
+\".+\"          {
+                  yylval.str = strdup(yytext);
+                  return STRING;
+                }
 .               yyerror("Unknown character.\n");
 
 %%
