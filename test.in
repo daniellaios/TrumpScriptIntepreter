@@ -1,22 +1,22 @@
-i=1000000;
-j=2000000;
-as long as ((i fewer 10000000) and (j equal 2000000)) :
-  if ((i-(2000000 *(i/2000000)))==lie):
-    print i;
+clinton=1000000;
+bush=2000000;
+as long as ((clinton fewer 10000000) and (bush equal 2000000)) :
+  if ((clinton-(2000000 *(clinton/2000000)))==lie):
+    print clinton;
   !
   else:
     print lie;
   !;
-  i=i plus 1000000;
+  clinton=clinton plus 1000000;
   !
 print (lie or fact);
 print (1000001-1000000);
 print (not fact and fact);
-a is "acesta este un string";
-prints a;
-print (a is "acesta este un string" ?);
-make c "america is great";
-prints c;
-hillary is "very dumb";
+obama is "acesta este un string";
+prints obama;
+print (obama is "acesta este un string" ?);
+make joe "america is great";
+prints joe;
+hillary is "not the president";
 prints hillary;
 America is great.
