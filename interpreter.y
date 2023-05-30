@@ -8,13 +8,40 @@
 
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
-nodeType *id(int i);
+nodeType *id(char* i);
 nodeType *con(int value);
 nodeType *str(char *s);
 void freeNode(nodeType *p);
 void yyerror(char *s);
 
-Variable sym[26]; /* symbol table */
+#define ARRAY_SIZE 34
+#define STRING_LENGTH 20
+
+char *names[ARRAY_SIZE] = {
+        "hillary", "clinton",
+        "martin", "o'malley",
+        "bernie", "sanders",
+        "jeb", "bush",
+        "ben", "carson",
+        "chris", "christie",
+        "ted", "cruz",
+        "carly", "fiorina",
+        "jim", "gilmore",
+        "mike", "huckabee",
+        "john", "kasich",
+        "rand", "paul",
+        "marco", "rubio",
+        "rick", "santorum",
+        "donald", "trump",
+        "barack", "obama",
+        "joe", "biden",
+        "ronald", "reagan",
+        "vladimir", "putin",
+        "sarah", "palin",
+        "mitt", "romney"
+    };
+
+Variable sym[ARRAY_SIZE]; /* symbol table */
 
 Variable ex(nodeType *p);
 
@@ -23,12 +50,13 @@ Variable ex(nodeType *p);
 %union {
   int iValue;      /* integer value */
   char sIndex;     /* symbol table index */
+  char *variableName; /*variable name*/
   char *str;      /* strings */
   nodeType *nPtr;  /* node pointer */
 };
 
 %token <iValue> INTEGER FACT LIE
-%token <sIndex> VARIABLE
+%token <variableName> VARIABLE
 %token <str> STRING
 %token WHILE IF PRINT PRINTS IS MAKE CHINA END_STATEMENT
 %nonassoc IFX
@@ -124,15 +152,20 @@ nodeType *str(char *s)
   return n;
 }
 
-nodeType *id(int i) 
+nodeType *id(char *variableName) 
 { 
   nodeType *p; 
   /* allocate node */ 
   if ((p = malloc(sizeof(idNodeType))) == NULL) 
     yyerror("out of memory"); 
   /* copy information */ 
-  p->type = typeId; 
-  p->id.i = i; 
+  p->type = typeId;
+  for(int i=0;i<ARRAY_SIZE;i++){
+    if(!strcmp(variableName,names[i])){
+      p->id.i = i; 
+    }
+  } 
+  
   return p; 
 } 
 

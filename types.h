@@ -33,4 +33,7 @@ typedef union {
   char *str;
 }Variable;
 
-extern Variable sym[26];
+#define ARRAY_SIZE 34
+#define STRING_LENGTH 20
+
+extern Variable sym[ARRAY_SIZE];

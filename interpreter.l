@@ -9,9 +9,13 @@
   /* variables */
 [a-z]           {
                    yylval.sIndex = *yytext - 'a';
+                   yylval.variableName = strdup(yytext);
                    return VARIABLE;
                 }
-
+"hillary"       {
+                  yylval.variableName = strdup(yytext);
+                  return VARIABLE;
+                }
   /* integers */                 
 [0-9]+          {
                    int value = atoi(yytext);
