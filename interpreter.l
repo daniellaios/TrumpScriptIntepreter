@@ -59,6 +59,7 @@
                     yylval.iValue = 0;
                     return LIE;
                 }
+"America is great." return END_STATEMENT;                
 
 [ \t\n]+        ;      // Skip whitespaces.
 \".+\"          {

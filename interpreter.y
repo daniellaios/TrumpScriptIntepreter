@@ -30,7 +30,7 @@ Variable ex(nodeType *p);
 %token <iValue> INTEGER FACT LIE
 %token <sIndex> VARIABLE
 %token <str> STRING
-%token WHILE IF PRINT PRINTS IS MAKE CHINA
+%token WHILE IF PRINT PRINTS IS MAKE CHINA END_STATEMENT
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -45,7 +45,7 @@ Variable ex(nodeType *p);
 
 %%
 
-program   : function '.'          { exit(0); }
+program   : function END_STATEMENT          { exit(0); }
           ;
 
 function  : function statement    { ex($2); freeNode($2); }
@@ -95,6 +95,7 @@ expr      : INTEGER               { $$ = con($1); }
           | expr IS expr '?'      { $$ = opr(SEQ, 2, $1, $3); }
           | '(' expr ')'          { $$ = $2; }
           ;
+                   
 
 %%
 

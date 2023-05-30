@@ -18,4 +18,4 @@ prints a;
 print (a is "acesta este un string" ?);
 make c "america is great";
 prints c;
-.
+America is great.
