@@ -14,7 +14,7 @@ nodeType *str(char *s);
 void freeNode(nodeType *p);
 void yyerror(char *s);
 
-#define ARRAY_SIZE 34
+#define ARRAY_SIZE 38
 #define STRING_LENGTH 20
 
 char *names[ARRAY_SIZE] = {
@@ -38,7 +38,7 @@ char *names[ARRAY_SIZE] = {
         "ronald", "reagan",
         "vladimir", "putin",
         "sarah", "palin",
-        "mitt", "romney"
+        "mitt", "romney","i","j","a","c"
     };
 
 Variable sym[ARRAY_SIZE]; /* symbol table */

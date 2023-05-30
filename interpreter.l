@@ -5,17 +5,6 @@
 %}
 
 %%
- 
-  /* variables */
-[a-z]           {
-                   yylval.sIndex = *yytext - 'a';
-                   yylval.variableName = strdup(yytext);
-                   return VARIABLE;
-                }
-"hillary"       {
-                  yylval.variableName = strdup(yytext);
-                  return VARIABLE;
-                }
   /* integers */                 
 [0-9]+          {
                    int value = atoi(yytext);
@@ -63,7 +52,18 @@
                     yylval.iValue = 0;
                     return LIE;
                 }
-"America is great." return END_STATEMENT;                
+"America is great." return END_STATEMENT;    
+
+ /* variables */
+[a-z]+           {
+                   //yylval.sIndex = *yytext - 'a';
+                   yylval.variableName = strdup(yytext);
+                   return VARIABLE;
+                }
+"hillary"       {
+                  yylval.variableName = strdup(yytext);
+                  return VARIABLE;
+                }
 
 [ \t\n]+        ;      // Skip whitespaces.
 \".+\"          {
